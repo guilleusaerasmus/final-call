@@ -62,6 +62,11 @@
     </section>
 
 
+    <section class="world" aria-labelledby="worldLabel">
+      <h2 class="label" id="worldLabel">Same gate around the world</h2>
+      <div class="cities mono" id="cities"></div>
+    </section>
+
     <aside class="trap" id="trap" hidden>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z" /><path class="cut" d="M12 9.5v5.2M12 17.4v.1" /></svg>
       <p id="trapText"></p>
@@ -100,6 +105,22 @@
           <div class="seg" id="bufferSeg" role="group" aria-label="Safety buffer"></div>
         </div>
         <div id="durations" class="durations"></div>
+      </div>
+    </section>
+
+    <section class="extras">
+      <div class="extra">
+        <h2 class="label">One click from any hackathon page</h2>
+        <p>Drag this button to your bookmarks bar. On a Devpost hackathon page, click it: Final Call opens with that hackathon's deadline already on the board. On other sites, select the deadline text first.</p>
+        <a class="bookmarklet mono" id="bookmarklet" href="#" title="Drag me to your bookmarks bar">✈ Final Call this deadline</a>
+      </div>
+      <div class="extra">
+        <h2 class="label">Share the board</h2>
+        <p>Send your team a link that opens this exact deadline on their board, in their own time zone.</p>
+        <button type="button" class="ghost" id="shareBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+          <span id="shareText">Copy board link</span>
+        </button>
       </div>
     </section>
 

@@ -13,7 +13,7 @@ const els = {
   input: $('deadlineInput'), hint: $('inputHint'), askZone: $('askZone'), askZoneSelect: $('askZoneSelect'),
   zoneSelect: $('zoneSelect'), nowTime: $('nowTime'), flaps: $('gateFlaps'), gateDay: $('gateDay'),
   countdown: $('countdown'), countLabel: $('countLabel'), readAs: $('readAs'), trap: $('trap'), trapText: $('trapText'),
-  mismatch: $('mismatch'), rows: $('rows'), buildLeft: $('buildLeft'), track: $('track'), ticks: $('ticks'), ics: $('icsBtn'), bufferSeg: $('bufferSeg'), durations: $('durations'), reset: $('resetBtn'),
+  mismatch: $('mismatch'), rows: $('rows'), buildLeft: $('buildLeft'), track: $('track'), ticks: $('ticks'), ics: $('icsBtn'), cities: $('cities'), bookmarklet: $('bookmarklet'), share: $('shareBtn'), shareText: $('shareText'), bufferSeg: $('bufferSeg'), durations: $('durations'), reset: $('resetBtn'),
 };
 const hintDefault = els.hint.innerHTML;
 
@@ -38,6 +38,11 @@ function save() {
 }
 
 const state = load();
+const fromLink = new URLSearchParams(location.search).get('d');
+if (fromLink) {
+  state.text = fromLink.slice(0, 200);
+  history.replaceState(null, '', location.pathname);
+}
 let deadline = null; // result of resolveDeadline, kept when new text is unreadable
 
 // ---------- Input ----------
@@ -192,6 +197,7 @@ function render(structural = false) {
   if (structural) renderNotes(zone);
   const rows = buildPlan(deadline.instant, steps(), state.bufferMin);
   renderBuildLeft(now, zone, rows);
+  if (structural) renderCities(zone);
   renderRunway(now, zone, rows, structural);
   renderRows(now, zone, structural);
 }
@@ -276,6 +282,48 @@ function downloadIcs() {
 }
 
 els.ics.addEventListener('click', downloadIcs);
+
+// ---------- Around the world ----------
+
+const WORLD = [
+  ['America/Los_Angeles', 'San Francisco'],
+  ['America/New_York', 'New York'],
+  ['Europe/London', 'London'],
+  ['Europe/Madrid', 'Madrid'],
+  ['Asia/Kolkata', 'Bengaluru'],
+  ['Asia/Tokyo', 'Tokyo'],
+];
+
+function renderCities(zone) {
+  const list = WORLD.some(([z]) => z === zone) ? WORLD : WORLD.map((c) => (c[0] === 'Europe/Madrid' ? [zone, cityName(zone)] : c));
+  els.cities.innerHTML = list.map(([z, name]) => {
+    const h = Number(hhmm(deadline.instant, z).slice(0, 2));
+    const cls = ['city', z === zone ? 'here' : '', h < 6 ? 'night' : ''].join(' ').trim();
+    return `<div class="${cls}"><b>${hhmm(deadline.instant, z)}</b><span>${dayLabel(deadline.instant, z).split(' ')[0]} · ${name}</span></div>`;
+  }).join('');
+}
+
+// ---------- Bookmarklet and share link ----------
+
+const appUrl = location.origin + location.pathname;
+const bookmarkletCode = `(()=>{const t=(getSelection()+'').trim()||((document.body.innerText.match(/Deadline:?[ \\t]*([^\\n]{6,80})/i)||[])[1]||'');if(!t){alert('Final Call: select the deadline text first, then click again.');return;}open('${appUrl}?d='+encodeURIComponent(t.trim()),'_blank');})()`;
+els.bookmarklet.href = 'javascript:' + encodeURI(bookmarkletCode);
+els.bookmarklet.addEventListener('click', (e) => {
+  e.preventDefault();
+  els.bookmarklet.textContent = '✈ Drag me to your bookmarks bar';
+});
+
+els.share.addEventListener('click', async () => {
+  const link = `${appUrl}?d=${encodeURIComponent(state.text)}`;
+  try {
+    await navigator.clipboard.writeText(link);
+    els.shareText.textContent = 'Link copied';
+  } catch {
+    els.shareText.textContent = link;
+  }
+  els.share.classList.add('done');
+  setTimeout(() => { els.shareText.textContent = 'Copy board link'; els.share.classList.remove('done'); }, 2500);
+});
 
 function hoursText(min) {
   const h = Math.abs(min) / 60;

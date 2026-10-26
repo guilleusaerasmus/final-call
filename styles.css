@@ -331,3 +331,31 @@ td.k { white-space: nowrap; }
   .runway { padding: 16px 14px 10px; }
   .seg-bar { font-size: 0; padding: 0; }
 }
+
+/* Around the world */
+.world { margin-top: 14px; }
+.world .label { margin-bottom: 8px; }
+.cities { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.city { background: var(--board); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.city b { display: block; font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: 0.03em; }
+.city span { display: block; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+.city.here { border-color: rgba(255, 176, 0, 0.55); }
+.city.here b { color: var(--amber); }
+.city.night b { color: #9fa8ff; }
+.city.night span::after { content: ' · night'; color: #9fa8ff; }
+
+/* Extras */
+.extras { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.extra { background: var(--board); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+.extra p { color: var(--muted); font-size: 14px; line-height: 1.5; margin: 0 0 14px; }
+.bookmarklet {
+  display: inline-block; background: var(--amber); color: #111; font-weight: 800; font-size: 13px; letter-spacing: 0.04em;
+  text-decoration: none; padding: 9px 14px; border-radius: 8px; cursor: grab; box-shadow: 0 6px 18px rgba(255, 176, 0, 0.18);
+}
+.bookmarklet:active { cursor: grabbing; }
+#shareBtn.done { border-color: var(--green); color: var(--green); }
+
+@media (max-width: 760px) {
+  .cities { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .extras { grid-template-columns: 1fr; }
+}
