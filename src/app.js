@@ -184,7 +184,7 @@ function render(structural = false) {
 
   const gateText = hhmm(deadline.instant, zone);
   if (gateText !== lastGate || structural) { renderFlaps(gateText); lastGate = gateText; }
-  els.gateDay.innerHTML = `${dayLabel(deadline.instant, zone)} <span class="city">· ${cityName(zone)} · ${offsetLabel(offsetMinutes(zone, deadline.instant))}</span>`;
+  els.gateDay.innerHTML = `${dayLabel(deadline.instant, zone)} <span class="where">· ${cityName(zone)} · ${offsetLabel(offsetMinutes(zone, deadline.instant))}</span>`;
   els.readAs.textContent = deadline.readAs;
 
   const d = splitDuration(deadline.instant - now);
@@ -192,7 +192,7 @@ function render(structural = false) {
   els.countdown.classList.toggle('closed', d.past);
   const units = [[d.days, 'd'], [d.hours, 'h'], [d.minutes, 'm'], [d.seconds, 's']].filter(([v], i) => i > 0 || v > 0);
   els.countdown.innerHTML = units.map(([v, u]) => `<span class="u"><b>${String(v).padStart(2, '0')}</b><small>${u}</small></span>`).join('') + (d.past ? '<small>&nbsp;ago</small>' : '');
-  document.title = d.past ? 'Gate closed · Final Call' : `${d.days ? d.days + 'd ' : ''}${d.hours}h ${String(d.minutes).padStart(2, '0')}m · Final Call`;
+  if (!document.documentElement.classList.contains('demo')) document.title = d.past ? 'Gate closed · Final Call' : `${d.days ? d.days + 'd ' : ''}${d.hours}h ${String(d.minutes).padStart(2, '0')}m · Final Call`;
 
   if (structural) renderNotes(zone);
   const rows = buildPlan(deadline.instant, steps(), state.bufferMin);
@@ -386,3 +386,11 @@ bindChips();
 readInput();
 render(true);
 setInterval(() => render(false), 1000);
+
+// ---------- Recorded demo (?demo=1) ----------
+
+if (new URLSearchParams(location.search).get('demo') === '1') {
+  document.documentElement.classList.add('demo');
+  document.title = 'Final Call demo';
+  import('./demo.js').then((m) => m.runDemo());
+}

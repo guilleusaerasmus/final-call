@@ -168,7 +168,7 @@ select {
   100% { transform: perspective(300px) rotateX(0); filter: brightness(1); }
 }
 .gate-day { margin: 14px 0 0; font-size: 16px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); }
-.gate-day .city { color: var(--muted); }
+.gate-day .where { color: var(--muted); }
 .gate-side { display: flex; flex-direction: column; justify-content: center; }
 .count { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
 .count .u { display: flex; align-items: baseline; gap: 4px; }
@@ -359,3 +359,15 @@ td.k { white-space: nowrap; }
   .cities { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .extras { grid-template-columns: 1fr; }
 }
+
+/* Demo recording cue (only with ?demo=1) */
+#demoCue {
+  position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 10;
+  background: rgba(8, 8, 10, 0.92); color: var(--amber); border: 1px solid rgba(255, 176, 0, 0.6);
+  font-family: var(--mono); font-weight: 700; font-size: 20px; letter-spacing: 0.04em;
+  padding: 12px 22px; border-radius: 12px; opacity: 0; pointer-events: none;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+#demoCue.show { opacity: 1; animation: cueIn 0.35s ease-out; white-space: nowrap; }
+html.demo { zoom: 1.6; }
+@keyframes cueIn { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
