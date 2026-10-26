@@ -2,5 +2,8 @@
   "name": "final-call",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node --test" }
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
 }
