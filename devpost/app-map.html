@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Final Call · App map</title>
+<style>
+  :root { --bg:#0e0e11; --panel:#17171b; --line:#2a2a31; --amber:#ffb000; --text:#ece9e2; --muted:#9a9aa2; --green:#3ddc84; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width:860px; margin:0 auto; padding:32px 20px 48px; }
+  h1 { color:var(--amber); font-family:ui-monospace, Consolas, monospace; letter-spacing:.06em; text-transform:uppercase; margin:0 0 4px; }
+  h2 { font-size:13px; font-family:ui-monospace, Consolas, monospace; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin:32px 0 10px; }
+  p, li { color:var(--text); }
+  .muted { color:var(--muted); }
+  code { font-family:ui-monospace, Consolas, monospace; background:var(--panel); border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-size:13px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin:10px 0; }
+  .stop b { color:var(--amber); }
+  details { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:10px 16px; margin:8px 0; }
+  summary { cursor:pointer; font-weight:600; }
+  svg text { font-family:ui-monospace, Consolas, monospace; font-size:12px; fill:var(--text); }
+  a { color:var(--amber); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Final Call · App map</h1>
+  <p class="muted">A snapshot of how the app works, for coming back to it later. Reference route (not toured live). Source commit: daa54ae and later; the code can drift from this map.</p>
+
+  <h2>What it is</h2>
+  <p>A one-page departures board. You paste a hackathon deadline; the page finds the moment it means, shows it in your time zone, warns about the daylight-saving gap between regions, and plans the shipping steps backwards. Everything runs in the browser; nothing is stored except your last plan in this browser's local storage.</p>
+
+  <h2>One action, end to end: pasting a deadline</h2>
+  <svg viewBox="0 0 820 150" role="img" aria-label="Paste text, reader, clock, planner, board">
+    <g fill="none" stroke="#2a2a31" stroke-width="1.5">
+      <rect x="4" y="40" width="130" height="64" rx="10" fill="#17171b"/>
+      <rect x="170" y="40" width="150" height="64" rx="10" fill="#17171b"/>
+      <rect x="356" y="40" width="150" height="64" rx="10" fill="#17171b"/>
+      <rect x="542" y="40" width="130" height="64" rx="10" fill="#17171b"/>
+      <rect x="708" y="40" width="108" height="64" rx="10" fill="#17171b" stroke="#ffb000"/>
+    </g>
+    <g stroke="#ffb000" stroke-width="2" marker-end="url(#a)">
+      <line x1="136" y1="72" x2="166" y2="72"/><line x1="322" y1="72" x2="352" y2="72"/>
+      <line x1="508" y1="72" x2="538" y2="72"/><line x1="674" y1="72" x2="704" y2="72"/>
+    </g>
+    <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ffb000"/></marker></defs>
+    <text x="22" y="68">You paste</text><text x="22" y="86" fill="#9a9aa2">input box</text>
+    <text x="186" y="68">parseDeadline</text><text x="186" y="86" fill="#9a9aa2">src/parse.js</text>
+    <text x="372" y="68">wallToInstant</text><text x="372" y="86" fill="#9a9aa2">src/clock.js</text>
+    <text x="558" y="68">buildPlan</text><text x="558" y="86" fill="#9a9aa2">src/plan.js</text>
+    <text x="722" y="68">render</text><text x="722" y="86" fill="#9a9aa2">src/app.js</text>
+  </svg>
+
+  <div class="card stop"><b>1 · Reading the text</b> — <code>src/parse.js</code>, search <code>export function parseDeadline</code>. Finds the date, time and zone word in what you pasted; <code>resolveDeadline</code> turns them into one exact moment and builds the "Read as" line.</div>
+  <div class="card stop"><b>2 · Time-zone maths</b> — <code>src/clock.js</code>, search <code>export function wallToInstant</code> and <code>export function dstTrap</code>. Uses the browser's own <code>Intl</code> rules to get each city's offset on that date, and compares this week's gap with the usual one.</div>
+  <div class="card stop"><b>3 · The board</b> — <code>src/app.js</code>, search <code>function render(</code>. Every second it redraws the countdown, build time left, runway and statuses from <code>buildPlan</code> and <code>statusAt</code> in <code>src/plan.js</code>.</div>
+
+  <h2>To change this, start here</h2>
+  <details><summary>Default shipping steps and their minutes</summary><p><code>src/plan.js</code> → <code>DEFAULT_STEPS</code> and <code>DEFAULT_BUFFER</code>.</p></details>
+  <details><summary>When a status turns Boarding or Final call</summary><p><code>src/plan.js</code> → <code>statusAt</code> (2 hours and 30 minutes).</p></details>
+  <details><summary>Add a time-zone word (e.g. "HST")</summary><p><code>src/zones.js</code> → <code>ZONE_WORDS</code>; add a test in <code>tests/core.test.js</code>.</p></details>
+  <details><summary>Cities in "Same gate around the world"</summary><p><code>src/app.js</code> → <code>WORLD</code>.</p></details>
+  <details><summary>Colours and the split-flap look</summary><p><code>styles.css</code> → <code>:root</code> variables and <code>.flap</code>.</p></details>
+
+  <h2>A practice to reuse</h2>
+  <p>The PRD wrote down observable results before any code ("Oct 26, 2026 5:00pm EDT seen from Madrid shows 22:00 and a 5 h vs usual 6 h warning"). Those sentences became the tests in <code>tests/core.test.js</code>. When a browser check showed a misleading warning for "EDT" in November, the fix was judged against the same written expectations, and a test was added. Writing the expected screen result first makes an agent's work checkable on any project.</p>
+
+  <h2>Run it again</h2>
+  <p>In the project folder: <code>python -m http.server 8765</code>, open <code>http://127.0.0.1:8765/</code>. Tests: <code>node --test</code>.</p>
+</main>
+</body>
+</html>

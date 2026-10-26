@@ -60,7 +60,8 @@ Build mode: fast (the learner asked the agent to do all the work it is allowed t
 
 ## Code Tour and App Map
 
-Not started.
+- [x] App map generated: `devpost/app-map.html` (reference route: paste → `parseDeadline` → `wallToInstant`/`dstTrap` → `buildPlan` → `render`; "to change this" pointers; practice: written acceptance criteria became tests and judged the EDT-in-November fix).
+- Activity: recap only, not a hands-on tour; the learner asked the agent to handle the work. Reflection question not asked.
 
 ## Revisions
 
